@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-import requests
+import requests, os
 
 app = Flask(__name__)
 
-mongo_connection_string = 'mongodb+srv://autoscraplivechat:AxVMfqF6MBusSnmw@cluster0.sow1wlm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+mongo_connection_string = os.getenv("MONGO_URI")
 client = MongoClient(mongo_connection_string)
 db = client['scrap_business']
 collection = db['call_records']
