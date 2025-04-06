@@ -122,6 +122,7 @@ def save_data():
 
     # Build the cleaned document
     cleaned_data = {
+        "incoming_number": data.get("incoming_number"),
         "specs": specs,
         "location": location,
         "pickup_details": pickup_details,
@@ -131,7 +132,6 @@ def save_data():
         "notes": data.get("notes")
     }
 
-    # Insert the document into MongoDB
     result = collection.insert_one(cleaned_data)
     print("Inserted document ID:", result.inserted_id)
 
