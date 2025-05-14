@@ -1,13 +1,7 @@
+import requests
 from flask import Flask, request, jsonify
-from pymongo import MongoClient
-import requests, os
 
 app = Flask(__name__)
-
-mongo_connection_string = os.getenv("MONGO_URI")
-client = MongoClient(mongo_connection_string)
-db = client['scrap_business']
-collection = db['call_records']
 
 
 def get_vehicle_specs(year, make, model):
@@ -89,54 +83,6 @@ def api_get_vehicle_weight():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/save_data', methods=['POST'])
-def save_data():
-    if not request.is_json:
-        return jsonify({"error": "Request must be in JSON format"}), 400
-
-    data = request.get_json()
-
-    # Group fields into arrays for better organization
-    specs = [
-        data.get("year"),
-        data.get("make"),
-        data.get("model"),
-        data.get("specific_model")
-    ]
-
-    location = [
-        data.get("province"),
-        data.get("city"),
-        data.get("street_number"),
-        data.get("street_name"),
-        data.get("unit_info"),
-        data.get("postal_code")
-    ]
-
-    pickup_details = [
-        data.get("pickup_date"),
-        data.get("pickup_time"),
-        data.get("pickup_name"),
-        data.get("phone_number")
-    ]
-
-    # Build the cleaned document
-    cleaned_data = {
-        "incoming_number": data.get("incoming_number"),
-        "specs": specs,
-        "location": location,
-        "pickup_details": pickup_details,
-        "is_running": data.get("is_running"),
-        "accepted_offer": data.get("accepted_offer"),
-        "scrap_value": data.get("scrap_value"),
-        "notes": data.get("notes")
-    }
-
-    result = collection.insert_one(cleaned_data)
-    print("Inserted document ID:", result.inserted_id)
-
-    return jsonify({"status": "success", "id": str(result.inserted_id)}), 200
-
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+# https://a00f-104-158-111-130.ngrok-free.app/get_vehicle_weight?year={{year}}&make={{make}}&model={{model}}&specific_model={{specific_model}}
