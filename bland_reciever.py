@@ -66,7 +66,6 @@ def api_get_vehicle_weight():
     year = request.args.get('year')
     make = request.args.get('make')
     model = request.args.get('model')
-    specific_model = request.args.get('specific_model', None)
 
     if not (year and make and model):
         return jsonify({"error": "Missing required parameters: year, make, model"}), 400
@@ -77,7 +76,7 @@ def api_get_vehicle_weight():
         return jsonify({"error": "Invalid year parameter"}), 400
 
     try:
-        weight = get_vehicle_weight(year, make, model, specific_model)
+        weight = get_vehicle_weight(year, make, model, specific_model=None)
         return jsonify({"CurbWeight": weight})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -85,4 +84,3 @@ def api_get_vehicle_weight():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-# https://a00f-104-158-111-130.ngrok-free.app/get_vehicle_weight?year={{year}}&make={{make}}&model={{model}}&specific_model={{specific_model}}
