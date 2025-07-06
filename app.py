@@ -77,7 +77,7 @@ def api_get_vehicle_weight():
 
     try:
         weight = get_vehicle_weight(year, make, model, specific_model=None)
-        return jsonify({"CurbWeight": weight})
+        return jsonify({"results": {"curb_weight": weight}})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
