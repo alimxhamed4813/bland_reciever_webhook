@@ -66,8 +66,9 @@ def api_get_vehicle_weight():
     year = request.args.get('year')
     make = request.args.get('make')
     model = request.args.get('model')
-
-    if not (year and make and model):
+    isOntario = request.args.get('isOntario')
+    
+    if not (year and make and model and isOntario):
         return jsonify({"error": "Missing required parameters: year, make, model"}), 400
 
     try:
@@ -77,7 +78,14 @@ def api_get_vehicle_weight():
 
     try:
         weight = get_vehicle_weight(year, make, model, specific_model=None)
-        return jsonify({"results": {"curb_weight": weight}})
+        if isOnatario:
+            rate = 220
+            price = 220 * weight
+            return jsonify({"results": {"scrap_price": price}})
+        else:
+            rate = 120
+            price = 120 * weight
+            return jsonify({"results": {"scrap_price": price}})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
